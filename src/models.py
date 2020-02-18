@@ -41,3 +41,11 @@ class MultiHeadAttention(tf.keras.Model):
         concat_attention = tf.reshape(scaled_attention, (batch_size, -1, self.dense_units))
         output = self.linear(concat_attention)
         return output, attention_weights
+
+
+
+def PositionWiseFFN(dense_units, dff):
+    return tf.keras.Sequential([
+        tf.keras.layers.Dense(dff, activation='relu'),
+        tf.keras.layers.Dense(dense_units)
+    ])
