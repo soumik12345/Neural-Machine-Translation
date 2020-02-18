@@ -1,2 +1,5 @@
 env/
 .vscode/
+.ipynb_checkpoints/
+src/__pycache__/
+nohup.out
