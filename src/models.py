@@ -48,6 +48,7 @@ class TrainingModel(object):
         )
 
         source_tokenizer, target_tokenizer = get_tokenizers(train_data)
+        SanityCheck.test_1(source_tokenizer, target_tokenizer)
 
         dataloader = DataLoader(source_tokenizer, target_tokenizer)
         dataloader = DataLoader(source_tokenizer, target_tokenizer)
@@ -61,3 +62,4 @@ class TrainingModel(object):
             configs['buffer_size'],
             configs['batch_size']
         )
+        SanityCheck.test_2(train_dataset, val_dataset, configs['batch_size'])
