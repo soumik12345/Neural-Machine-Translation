@@ -24,7 +24,7 @@ def get_tokenizers(dataset, approx_vocab_size=2 ** 13):
 
 class DataLoader:
 
-    def __init__(self, source_tokenizer, target_tokenize, max_limit=40):
+    def __init__(self, source_tokenizer, target_tokenizer, max_limit=40):
         self.source_tokenizer = source_tokenizer
         self.target_tokenizer = target_tokenizer
         self.max_limit = max_limit
