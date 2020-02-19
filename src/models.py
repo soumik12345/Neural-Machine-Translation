@@ -35,31 +35,3 @@ class Transformer(tf.keras.Model):
         )
         output = self.output_layer(decoder_output)
         return output, attention_weights
-
-
-
-class TrainingModel(object):
-
-    def __init__(self, configs):
-        
-        train_data, val_data = download_dataset(
-            configs['dataset_adress'],
-            disable_progress_bar=True
-        )
-
-        source_tokenizer, target_tokenizer = get_tokenizers(train_data)
-        SanityCheck.test_1(source_tokenizer, target_tokenizer)
-
-        dataloader = DataLoader(source_tokenizer, target_tokenizer)
-        dataloader = DataLoader(source_tokenizer, target_tokenizer)
-        train_dataset = dataloader.get_dataset(
-            train_data,
-            configs['buffer_size'],
-            configs['batch_size']
-        )
-        val_dataset = dataloader.get_dataset(
-            train_data,
-            configs['buffer_size'],
-            configs['batch_size']
-        )
-        SanityCheck.test_2(train_dataset, val_dataset, configs['batch_size'])
