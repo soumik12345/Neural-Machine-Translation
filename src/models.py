@@ -3,7 +3,6 @@ from .encoder import *
 from .decoder import *
 from .utils import *
 from .dataset import *
-from .sanity_check import SanityCheck
 import tensorflow as tf
 
 
