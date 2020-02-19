@@ -3,3 +3,4 @@ env/
 .ipynb_checkpoints/
 src/__pycache__/
 nohup.out
+.DS_Store
