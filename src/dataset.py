@@ -64,7 +64,8 @@ class DataLoader:
 
     def get_dataset(self, dataset, buffer_size, batch_size):
         tf_dataset = dataset.map(self.map_function)
-        tf_dataset = tf_dataset.filter(self.filter_max_length)
+        if self.max_limit is not None:
+            tf_dataset = tf_dataset.filter(self.filter_max_length)
         tf_dataset = tf_dataset.cache()
         tf_dataset = tf_dataset.shuffle(buffer_size)
         tf_dataset = tf_dataset.padded_batch(
