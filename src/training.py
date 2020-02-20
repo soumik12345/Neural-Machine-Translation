@@ -75,13 +75,13 @@ def train(dataset, transformer, optimizer, epochs, checkpoint_dir):
         optimizer.apply_gradients(zip(gradients, transformer.trainable_variables))
         return train_loss(loss), train_accuracy(target_real, predictions)
 
+    iteration = 0
     for epoch in range(epochs):
         start_time = time()
         train_loss.reset_states()
         train_accuracy.reset_states()
         print('Epoch: {}....'.format(epoch + 1))
         with summary_writer.as_default():
-            iteration = 0
             for (batch, (source, target)) in tqdm(enumerate(dataset)):
                 batch_loss, batch_accuracy = train_step(source, target)
                 tf.summary.scalar('Train Loss', batch_loss, step=iteration)
