@@ -86,7 +86,7 @@ def train(dataset, transformer, optimizer, epochs, checkpoint_dir):
                 batch_loss, batch_accuracy = train_step(source, target)
                 tf.summary.scalar('Train Loss', batch_loss, step=iteration)
                 tf.summary.scalar('Train Accuracy', batch_accuracy, step=iteration)
+                summary_writer.flush()
                 iteration += 1
-            summary_writer.flush()
         checkpoint_manager.save()
         print('Done. Time taken: {} seconds'.format(time() - start_time))
