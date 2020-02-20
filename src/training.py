@@ -84,7 +84,7 @@ def train(dataset, transformer, optimizer, epochs, checkpoint_dir):
             for (batch, (source, target)) in tqdm(enumerate(dataset)):
                 batch_loss, batch_accuracy = train_step(source, target)
                 tf.summary.scalar('Train Loss', batch_loss, step=epoch)
-                tf.summary.scalar('Train Accuracy', batch_accuracy, step=epoch)
-                summary_writer.flush()
-            checkpoint_manager.save()
-            print('Done. Time take: {} seconds'.format(time() - start_time))
+            tf.summary.scalar('Train Accuracy', batch_accuracy, step=epoch)
+            summary_writer.flush()
+        checkpoint_manager.save()
+        print('Done. Time take: {} seconds'.format(time() - start_time))
