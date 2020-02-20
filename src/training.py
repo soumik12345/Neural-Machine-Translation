@@ -53,7 +53,7 @@ def train(dataset, transformer, optimizer, epochs, checkpoint_dir):
     train_loss = tf.keras.metrics.Mean(name='train_loss')
     train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='train_accuracy')
     summary_writer = tf.summary.create_file_writer('logs/train')
-    checkpoint, checkpoint_manager = get_checkpoints(checkpoint_dir)
+    checkpoint, checkpoint_manager = get_checkpoints(transformer, optimizer, checkpoint_dir)
     
     @tf.function(
         input_signature=[
