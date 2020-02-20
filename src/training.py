@@ -1,4 +1,8 @@
+from .loss import *
 from .utils import *
+from .models import *
+from time import time
+from tqdm import tqdm
 import tensorflow as tf
 
 
@@ -40,3 +44,45 @@ def get_checkpoints(transformer, optimizer, checkpoint_dir='./checkpoints/train'
     if checkpoint_manager.latest_checkpoint:
         checkpoint.restore(checkpoint_manager.latest_checkpoint)
     return checkpoint, checkpoint_manager
+
+
+
+
+def train(dataset, transformer, optimizer, epochs, checkpoint_dir):
+
+    train_loss = tf.keras.metrics.Mean(name='train_loss')
+    train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='train_accuracy')
+    summary_writer = tf.summary.create_file_writer('logs/train')
+    checkpoint, checkpoint_manager = get_checkpoints(checkpoint_dir)
+    
+    @tf.function(
+        input_signature=[
+            tf.TensorSpec(shape=(None, None), dtype=tf.int64),
+            tf.TensorSpec(shape=(None, None), dtype=tf.int64)
+        ]
+    )
+    def train_step(source, target):
+        target_input = target[:, :-1]
+        target_real = target[:, 1:]
+        encoder_padding_mask, combined_mask, decoder_padding_mask = get_masks(source, target_input)
+        with tf.GradientTape() as tape:
+            predictions, _ = transformer(
+                source, target_input, True, encoder_padding_mask,
+                combined_mask, decoder_padding_mask
+            )
+            loss = loss_function(target_real, predictions)
+        gradients = tape.gradient(loss, transformer.trainable_variables)
+        optimizer.apply_gradients(zip(gradients, transformer.trainable_variables))
+        return train_loss(loss), train_accuracy(target_real, predictions)
+
+    for epoch in range(epochs):
+        start_time = time()
+        train_loss.reset_states()
+        train_accuracy.reset_states()
+        with summary_writer.as_default():
+            for (batch, (source, target)) in tqdm(enumerate(dataset)):
+                batch_loss, batch_accuracy = train_step(source, target)
+                tf.summary.scalar('Train Loss', batch_loss, step=epoch)
+                tf.summary.scalar('Train Accuracy', batch_accuracy, step=epoch)
+                summary_writer.flush()
+            checkpoint_manager.save()
