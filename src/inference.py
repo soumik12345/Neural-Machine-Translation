@@ -19,7 +19,9 @@ def predict(sentence, transformer, source_tokenizer, target_tokenizer, max_limit
         preds = preds[: , -1 :, :]
         predicted_id = tf.cast(tf.argmax(preds, axis=-1), tf.int32)
         if predicted_id == target_tokenizer.vocab_size+1:
-            return tf.squeeze(output, axis=0), attention_weights
+            result = tf.squeeze(output, axis=0)
+            predicted_sentence = target_tokenizer.decode([i for i in result if i < target_tokenizer.vocab_size])
+            return result, predicted_sentence, attention_weights
         output = tf.concat([output, predicted_id], axis=-1)
     result = tf.squeeze(output, axis=0)
     predicted_sentence = target_tokenizer.decode([i for i in result if i < target_tokenizer.vocab_size])
